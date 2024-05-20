@@ -1,0 +1,92 @@
+/* Product.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.productInfo {
+  text-align: center;
+  width: 80%;
+  margin-bottom: 2em;
+}
+
+.productImage {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.productDescription {
+  margin: 20px 0;
+  line-height: 1.6;
+}
+
+.productPrice {
+  font-size: 1.5em;
+  color: #ff6600;
+  margin: 10px 0;
+}
+
+.productDiscount {
+  color: #ff0000;
+  font-size: 1.2em;
+  text-decoration: line-through;
+}
+
+.specifications {
+  margin: 20px 0;
+  background-color: #f8f8f8;
+  padding: 1em;
+  border-radius: 5px;
+}
+
+.specifications ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.specifications li {
+  margin: 5px 0;
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+.addReview {
+  margin: 20px 0;
+  width: 80%;
+}
+
+.ratingInput,
+.commentInput {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.submitButton,
+.addToCartButton {
+  padding: 10px 20px;
+  background-color: #0070f3;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submitButton:hover,
+.addToCartButton:hover {
+  background-color: #005bb5;
+}
+
+.cartMessage {
+  margin-top: 10px;
+  color: green;
+}
