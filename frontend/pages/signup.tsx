@@ -16,11 +16,14 @@ const Signup: React.FC = () => {
     address: '',
     password: '',
   });
+  const [error, setError] = useState<string | null>(null);
   const { dispatch } = useAuth();
   const router = useRouter();
 
   const handleSignup = async () => {
     try {
+      // Clear previous error
+      setError(null);
       // Call backend API to signup
       const { token } = await signupUser(formData);
       // Save token to local storage and update authentication state
@@ -28,9 +31,9 @@ const Signup: React.FC = () => {
       dispatch({ type: 'LOGIN' });
       // Redirect to home page or any other desired page
       router.push('/');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Signup failed:', error);
-      // Handle error (e.g., display error message)
+      setError(error.response?.data?.message || 'Signup failed');
     }
   };
 
@@ -42,6 +45,7 @@ const Signup: React.FC = () => {
   return (
     <div className={styles.container}>
       <h2>Signup</h2>
+      {error && <p className={styles.error}>{error}</p>}
       <input
         type="text"
         name="firstName"

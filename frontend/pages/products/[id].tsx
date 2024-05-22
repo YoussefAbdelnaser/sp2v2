@@ -33,9 +33,14 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [customizations, setCustomizations] = useState<{ [key: string]: string }>({});
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
 
   const handleRatingSubmit = async () => {
     try {
+      setErrorMessage(null); // Clear previous error
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('Token not found');
@@ -44,16 +49,22 @@ const Product: React.FC<ProductProps> = ({ product }) => {
       await addReview(product._id, rating, comment, token);
     } catch (error) {
       console.error('Error submitting review:', error);
+      if (error.message === 'Token not found') {
+        setErrorMessage('You need to login or signup to do that action.');
+        setIsModalOpen(true);
+      }
     }
   };
 
   const handleAddToCart = async () => {
     try {
+      setErrorMessage(null); // Clear previous error
+      setSuccessMessage(null); // Clear previous success message
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('Token not found');
       }
-
+  
       const cartItem = {
         productId: product._id,
         quantity,
@@ -62,36 +73,56 @@ const Product: React.FC<ProductProps> = ({ product }) => {
         endDate: purchaseOption === 'rent' ? new Date(endDate) : undefined,
         customization: customizations,
       };
-
+  
       await addToCart(cartItem, token);
+      setSuccessMessage('Added to cart successfully');
     } catch (error) {
       console.error('Error adding to cart:', error);
+      if (error.message === 'Token not found') {
+        setErrorMessage('You need to login or signup to do that action.');
+        setIsModalOpen(true);
+      }
     }
   };
+  
 
- return (
-  <main className={styles.container}>
-    <div className={styles.productInfo}>
-      <h1>{product.name}</h1>
-      <img src={`/images/${product._id}.jpg`} alt={product.name} className={styles.productImage} />
-      <p className={styles.productDescription}>{product.description}</p>
-      <p className={styles.productPrice}>${product.price}</p>
-      {product.discount && <p className={styles.productDiscount}>{product.discount}% off</p>}
-      <div className={styles.specifications}>
-        <h2>Specifications</h2>
-        <ul>
-          {product.specifications && typeof product.specifications === 'object' ? (
-            Object.entries(product.specifications).map(([key, value]) => (
-              <li key={key}>
-                {key}: {value}
-              </li>
-            ))
-          ) : (
-            <li>No specifications available</li>
-          )}
-        </ul>
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setErrorMessage(null);
+  };
+
+  return (
+<main className={styles.container}>
+  {isModalOpen && (
+    <div className={styles.modalOverlay}>
+      <div className={styles.modal}>
+        <p>{errorMessage}</p>
+        <button onClick={closeModal} className={styles.closeButton}>Close</button>
       </div>
     </div>
+  )}
+  <div className={styles.productInfo}>
+    <h1>{product.name}</h1>
+    <img src={`/images/${product._id}.jpg`} alt={product.name} className={styles.productImage} />
+    <p className={styles.productDescription}>{product.description}</p>
+    <p className={styles.productPrice}>${product.price}</p>
+    {product.discount && <p className={styles.productDiscount}>{product.discount}% off</p>}
+    <div className={styles.specifications}>
+      <h2>Specifications</h2>
+      <ul>
+        {product.specifications && typeof product.specifications === 'object' ? (
+          Object.entries(product.specifications).map(([key, value]) => (
+            <li key={key}>
+              {key}: {value}
+            </li>
+          ))
+        ) : (
+          <li>No specifications available</li>
+        )}
+      </ul>
+    </div>
+  </div>
+  <div className={styles.cartAndReviewsContainer}>
     <div className={styles.addToCart}>
       <h2>Add to Cart</h2>
       <label>
@@ -156,6 +187,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
       <button onClick={handleAddToCart} className={styles.addToCartButton}>
         Add to Cart
       </button>
+      {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
     </div>
     <div className={styles.reviews}>
       <h2>Reviews</h2>
@@ -168,29 +200,30 @@ const Product: React.FC<ProductProps> = ({ product }) => {
           <p>{new Date(review.createdAt).toLocaleDateString()}</p>
         </div>
       ))}
+      <div className={styles.addReview}>
+        <h2>Add a Review</h2>
+        <input
+          type="number"
+          value={rating}
+          onChange={(e) => setRating(Number(e.target.value))}
+          min="1"
+          max="5"
+          className={styles.ratingInput}
+        />
+        <textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Write your review here..."
+          className={styles.commentInput}
+        ></textarea>
+        <button onClick={handleRatingSubmit} className={styles.submitButton}>
+          Submit Review
+        </button>
+      </div>
     </div>
-    <div className={styles.addReview}>
-      <h2>Add a Review</h2>
-      <input
-        type="number"
-        value={rating}
-        onChange={(e) => setRating(Number(e.target.value))}
-        min="1"
-        max="5"
-        className={styles.ratingInput}
-      />
-      <textarea
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        placeholder="Write your review here..."
-        className={styles.commentInput}
-      ></textarea>
-      <button onClick={handleRatingSubmit} className={styles.submitButton}>
-        Submit Review
-      </button>
-    </div>
-  </main>
-);
+  </div>
+</main>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

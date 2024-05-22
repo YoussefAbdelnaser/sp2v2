@@ -1,5 +1,5 @@
-/* eslint-disable prettier/prettier */
 import Link from 'next/link';
+import styles from '../styles/ProductCard.module.css';
 
 interface ProductCardProps {
   product: {
@@ -14,14 +14,16 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
-    <div className="product-card">
+    <div className={styles.productCard}>
       <Link href={`/products/${product._id}`}>
-        <img src={`/images/${product._id}.jpg`} alt={product.name} />
-        <h2>{product.name}</h2>
-        <p className="price">${product.price}</p>
-        {product.discount && (
-          <p className="discount">{product.discount}% off</p>
-        )}
+        <div>
+          <img src={`/images/${product._id}.jpg`} alt={product.name} className={styles.productImage} />
+          <h2 className={styles.productName}>{product.name}</h2>
+          <p className={styles.price}>${product.price}</p>
+          {product.discount && (
+            <p className={styles.discount}>{product.discount}% off</p>
+          )}
+        </div>
       </Link>
     </div>
   );
