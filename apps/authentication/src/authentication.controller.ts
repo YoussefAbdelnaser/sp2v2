@@ -35,12 +35,9 @@ export class AuthenticationController {
   async login(@Body() loginDto: LoginDto): Promise<{ token: string }> {
     return await this.authenticationService.login(loginDto);
   }
- //////////////////////////////////////////////////////////////// 
-@Get('/user/:email')
-async getUserByEmail(@Param('email') email: string): Promise<User> {
-  return await this.authenticationService.getUserByEmail(email);
-}
-
-
-
+  ////////////////////////////////////////////////////////////////
+  @Get('/user/:email')
+  async getUserByEmail(@Param('email') email: string): Promise<User> {
+    return await this.authenticationService.getUserByEmail(email);
+  }
 }

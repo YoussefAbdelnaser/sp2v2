@@ -21,7 +21,7 @@ export class ConsumerService implements OnApplicationShutdown {
     for (const topic of topics) {
       await consumer.subscribe(topic);
     }
-    await consumer.run(config); 
+    await consumer.run(config);
     this.consumers.push(consumer);
   }
 

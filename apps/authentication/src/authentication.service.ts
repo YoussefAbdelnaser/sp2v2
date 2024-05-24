@@ -1,5 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../schemas/user.schema';
@@ -97,15 +101,12 @@ export class AuthenticationService {
     return { user, token };
   }
 
-
-
-///get email
-async getUserByEmail(email: string): Promise<User> {
-  const user = await this.userModel.findOne({ email }).exec();
-  if (!user) {
-    throw new NotFoundException('User not found');
+  ///get email
+  async getUserByEmail(email: string): Promise<User> {
+    const user = await this.userModel.findOne({ email }).exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
-  return user;
-}
-
 }

@@ -5,7 +5,10 @@ import Link from 'next/link';
 import { useAuth } from '../authContext';
 
 const Navbar: React.FC = () => {
-  const { state: { isLoggedIn }, dispatch } = useAuth();
+  const {
+    state: { isLoggedIn },
+    dispatch,
+  } = useAuth();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -32,7 +35,9 @@ const Navbar: React.FC = () => {
             <Link href="/orders" legacyBehavior>
               <a className="nav-link">Orders</a>
             </Link>
-            <a onClick={handleLogout} className="nav-link">Logout</a>
+            <a onClick={handleLogout} className="nav-link">
+              Logout
+            </a>
           </>
         ) : (
           <>
